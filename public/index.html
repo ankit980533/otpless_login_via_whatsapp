@@ -1,0 +1,78 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+</head>
+<body>
+    <h1>Login Form</h1>
+    <form id="loginForm">
+        <label for="mobile">Mobile Number:</label><br>
+        <input type="number" id="mobile" name="mobile" required><br><br>
+        <button type="submit">Send Magic Link via WhatsApp</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+           let sessionId = sessionStorage.getItem('sessionId'); // Retrieve session ID from sessionStorage
+
+
+if (!sessionId) {
+    sessionId = generateSessionId(); 
+    sessionStorage.setItem('sessionId', sessionId);
+}
+
+
+
+        const serverURL = 'http://localhost:3000';
+        const socket = io(serverURL);
+      console.log(sessionId);
+     
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const mobile = document.getElementById('mobile').value;
+
+            fetch(`${serverURL}/login/magic-link`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mobile ,sessionId})
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Failed to request magic link.');
+            })
+            .then(data => {
+                alert(data); // Display success message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.'); // Display error message
+            });
+            socket.emit('storeUserSocket', mobile);
+        });
+
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+
+        socket.on('verificationSuccess', function(data) {
+            console.log('Verification successful for email:', data.sessionId);
+            console.log('Token:', data.token);
+            if (data.token && data.sessionId===sessionId) {
+                window.location.href = `hello.html?userEmail=${data.mobile}&token=${data.token}`;// Redirect to success page
+            }
+        });
+        function generateSessionId() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+    </script>
+</body>
+</html>
