@@ -1,6 +1,6 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser'); 
+const jwt = require('jsonwebtoken'); 
 const http = require('http');
 const path = require('path');
 const https = require('https');
@@ -21,38 +21,29 @@ const users = [
 ];
 
 const secretKey = 'secret';
-// const msg91AuthKey = process.env.MSG91_AUTH_KEY;
 const msg91AuthKey = process.env.AUTH_KEY;
-
-// let clientSocketId = null;
-
-// io.on('connection', (socket) => {
-//     console.log('A user connected');
-    
-//     clientSocketId = socket.id;
-
-//     socket.on('disconnect', () => {
-//         console.log('User disconnected');
-//         clientSocketId = null;
-//     });
-// });
-
 
 app.post('/login/magic-link', (req, res) => {
     console.log(req.body);
     const { mobile } = req.body;
-const {sessionId}=req.body;
+
+    const {sessionId}=req.body;
     const user = users.find(user => user.mobile === mobile);
+
     if (!user) {
         return res.status(404).json({ message: 'User not found.' });
     }
+
     if (mobile) {
         io.to(mobile).emit('connectionEstablished');
     }
+
     const token = jwt.sign({ mobile ,sessionId}, secretKey, { expiresIn: '2h' });
 
-console.log("tokrn:"+token);
 
+    console.log("token:"+token);
+
+    
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("authkey", msg91AuthKey);
@@ -122,19 +113,19 @@ app.get('/login', (req, res) => {
             console.log(decoded);
             const mobile = decoded.mobile;
           const sessionId=decoded.sessionId;
-          console.log("id"+sessionId);
+          console.log("id" + sessionId);
             const user = users.find(user => user.mobile === mobile);
             if (!user) {
-                console.log("user not found")
+                console.log("user not found") 
                 return res.status(404).json({ message: 'User not found.' });
             }
 
             user.verified = true;
             console.log("Sending test message through socket...");
 
-            io.to(mobile).emit('verificationSuccess', { sessionId, token });
+            io.to(mobile).emit('verificationSuccess', { mobile,sessionId, token });
 
-
+console.log("message sent");
             res.send('Login successful!');
         }
     });
@@ -144,7 +135,6 @@ io.on('connection', socket => {
 
     socket.on('storeUserSocket', mobile => {
         console.log(`Storing socket ID for ${mobile}`);
-        // clientSocketId = socket.id;
         socket.join(mobile);
     });
 });

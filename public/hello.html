@@ -10,20 +10,17 @@
     <div id="userData"></div>
 
     <script>
-        // Function to get query parameter from URL
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        // Get the user email and token from the URL
         const userEmail = getQueryParam('userEmail');
         const token = getQueryParam('token');
 
-        // Display the user email and token on the page
         const userDataDiv = document.getElementById('userData');
         userDataDiv.innerHTML = `
-            <p>User Mobile: ${userEmail}</p>
+            <p> User Mobile: +${userEmail}</p>
             <p>Token: ${token}</p>
         `;
     </script>
