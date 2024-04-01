@@ -10,7 +10,12 @@ const cors=require('cors');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-app.use(cors());
+
+const corsOptions = {
+    origin: 'https://otpless-login-via-whatsapp-hggaikk7b-ankit980533s-projects.vercel.app',
+    credentials: true 
+  };
+  app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
