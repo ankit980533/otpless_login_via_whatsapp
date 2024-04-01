@@ -6,11 +6,11 @@ const path = require('path');
 const https = require('https');
 require('dotenv').config();
 const socketIO = require('socket.io');
-
+const cors=require('cors');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
