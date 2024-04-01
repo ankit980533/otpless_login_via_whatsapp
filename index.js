@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const corsOptions = {
-    origin: 'https://otpless-login-via-whatsapp-hggaikk7b-ankit980533s-projects.vercel.app',
+    origin: 'https://otpless-login-via-whatsapp.vercel.app',
     credentials: true 
   };
   app.use(cors(corsOptions));
