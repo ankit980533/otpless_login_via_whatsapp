@@ -35,7 +35,7 @@
         document.getElementById('loginForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const mobile = document.getElementById('mobile').value;
-
+           console.log(mobile);
             fetch(`${serverURL}/login/magic-link`, {
                 method: 'POST',
                 headers: {
